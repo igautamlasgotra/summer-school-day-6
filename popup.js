@@ -8,22 +8,35 @@ document.getElementById('getWeather').addEventListener('click', function () {
 function showWeather(position) {
   var lat = position.coords.latitude;
   var lon = position.coords.longitude;
-  var key = 'ce707d6adce6460ebfb124540250407';
-  var url = `https://api.weatherapi.com/v1/current.json?key=${key}&q=${lat},${lon}`;
-  fetch(url)
-    .then(function (response) {
-      return response.json();
+  var weatherKey = 'a8cd8687382eb869527eba48d9780009';
+  var openCageKey = '1756c96049d943f9a1c598c8f5728423';
+  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weatherKey}&units=metric`)
+    .then(response => response.json())
+    .then(data => {
+      var temp = data.main.temp + "°C";
+      var cond = data.weather[0].description;
+      document.getElementById('result').innerHTML = temp + "<br>" + cond;
     })
-    .then(function (data) {
-      var city = data.location.name;
-      var temp = data.current.temp_c + "°C";
-      var cond = data.current.condition.text;
-      document.getElementById('result').innerHTML = city + "<br>" + temp + "<br>" + cond;
-    })
-    .catch(function () {
+    .catch(error => {
+      console.log("Weather fetch error:", error);
       document.getElementById('result').textContent = "Failed to fetch weather.";
+    });
+  fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=${openCageKey}`)
+    .then(response => response.json())
+    .then(data => {
+      const cityName =
+        data.results[0].components.town ||
+        data.results[0].components.village ||
+        data.results[0].components.city ||
+        data.results[0].components.county;
+      document.getElementById('location').textContent = "You are in: " + cityName;
+    })
+    .catch(error => {
+      console.log("City fetch error:", error);
+      document.getElementById('location').textContent = "City not found";
     });
 }
 function showError(error) {
+  console.log("Geolocation error:", error);
   document.getElementById('result').textContent = "Location access denied.";
 }

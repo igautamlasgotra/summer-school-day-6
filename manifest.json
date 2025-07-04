@@ -4,12 +4,10 @@
   "version": "1.0",
   "description": "Shows weather based on user's current location",
   "permissions": ["geolocation"],
-  "host_permissions": ["https://api.weatherapi.com/"],
+  "host_permissions": ["https://api.openweathermap.org/","https://api.opencagedata.com/"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/icon.png",
-      "48": "icons/icon.png",
       "128": "icons/icon.png"
     }
   }
